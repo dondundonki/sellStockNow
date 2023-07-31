@@ -47,3 +47,6 @@ def lambda_handler(event, context):
             print(response)
         else:
             pass
+    return {
+        "statusCode": 200,
+    }
