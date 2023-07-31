@@ -1,7 +1,6 @@
 import json
 import os
 import requests
-import yfinance as yf
 from bs4 import BeautifulSoup
 
 base_url = f"https://finance.yahoo.com/quote/"
@@ -22,16 +21,6 @@ def get_pe_ratio(ticker):
     return backup[10]
 
 
-def get_current_stock_price(ticker):
-    url = base_url + f"{ticker}/profile?p={ticker}"
-    request = requests.get(url, headers=header)
-    soup = BeautifulSoup(request.content, "html.parser")
-    current_price = soup.find(
-        "fin-streamer", {"class": "Fw(b) Fz(36px) Mb(-4px) D(ib)"}
-    ).text
-    return float(current_price)
-
-
 def lambda_handler(event, context):
     # TODO implement
     BOT_TOKEN = os.environ.get("TOKEN")
@@ -40,11 +29,7 @@ def lambda_handler(event, context):
 
     stocks = STOCK_LIST.split(",")
     for each in stocks:
-        try:
-            value = get_pe_ratio(each)
-        except:
-            ticker = yf.Ticker(each)
-            value = ticker.info["trailingPE"]
+        value = get_pe_ratio(each)
 
         if value == "N/A" or value == "∞":
             pass
