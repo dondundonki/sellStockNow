@@ -37,6 +37,7 @@ def lambda_handler(event, context):
     BOT_TOKEN = os.environ.get("TOKEN")
     BOT_CHAT_ID = os.environ.get("CHAT_ID")
     STOCK_LIST = os.environ.get("STOCK_LIST")
+
     stocks = STOCK_LIST.split(",")
     for each in stocks:
         try:
@@ -45,9 +46,9 @@ def lambda_handler(event, context):
             ticker = yf.Ticker(each)
             value = ticker.info["trailingPE"]
 
-        if value == "N/A":
+        if value == "N/A" or value == "∞":
             pass
-        elif value >= 40:
+        elif float(value) >= 40:
             bot_message = f"Time to sell {each}"
             send_text = (
                 "https://api.telegram.org/bot"
